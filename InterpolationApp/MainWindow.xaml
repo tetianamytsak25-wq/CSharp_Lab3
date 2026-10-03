@@ -1,0 +1,192 @@
+﻿<Window x:Class="InterpolationApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Interpolation Studio"
+        Width="950"
+        Height="680"
+        MinWidth="760"
+        MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="#101827"
+        Foreground="#E5E7EB"
+        FontFamily="Segoe UI"
+        FontSize="13"
+        Language="uk-UA">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#1B2638"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#38BDF8"/>
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="INTERPOLATION STUDIO"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="#38BDF8"/>
+            <TextBlock Text="Лінійна та кубічна інтерполяція Ерміта"
+                       Foreground="#AAB8CC"
+                       Margin="0,3,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Background="{StaticResource PanelBrush}"
+                CornerRadius="10"
+                Padding="12"
+                Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="h1:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+
+                <TextBox x:Name="H1TextBox"
+         Grid.Column="1"
+         Text="0,5"
+         VerticalContentAlignment="Center"
+         Padding="7,5"
+         Background="#0F172A"
+         Foreground="White"
+         BorderBrush="#475569"/>
+
+                <TextBox x:Name="H2TextBox"
+         Grid.Column="3"
+         Text="0,1"
+         VerticalContentAlignment="Center"
+         Padding="7,5"
+         Background="#0F172A"
+         Foreground="White"
+         BorderBrush="#475569"/>
+                <Button Grid.Column="5"
+        Content="Побудувати графік"
+        Click="BuildButton_Click"
+        Padding="14,8"
+        Background="#0284C7"
+        Foreground="White"
+        BorderThickness="0"
+        FontWeight="SemiBold"
+        Cursor="Hand"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{StaticResource PanelBrush}"
+                    CornerRadius="8"
+                    Padding="10"
+                    Margin="0,0,0,10">
+                <WrapPanel>
+                    <CheckBox Content="sin(x)"
+                              IsChecked="{Binding ShowReference}"
+                              Foreground="#60A5FA"
+                              Margin="0,0,18,5"
+                              VerticalAlignment="Center"/>
+
+                    <CheckBox Content="Лінійна"
+                              IsChecked="{Binding ShowLinear}"
+                              Foreground="#F87171"
+                              Margin="0,0,18,5"
+                              VerticalAlignment="Center"/>
+
+                    <CheckBox Content="Ерміт"
+                              IsChecked="{Binding ShowHermite}"
+                              Foreground="#4ADE80"
+                              Margin="0,0,18,5"
+                              VerticalAlignment="Center"/>
+
+                    <CheckBox Content="Опорні точки"
+                              IsChecked="{Binding ShowPoints}"
+                              Foreground="White"
+                              Margin="0,0,18,5"
+                              VerticalAlignment="Center"/>
+
+                    <CheckBox Content="Похибка"
+                              IsChecked="{Binding ShowError}"
+                              Foreground="#FB923C"
+                              Margin="0,0,0,5"
+                              VerticalAlignment="Center"/>
+                </WrapPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Background="#0B1220"
+                    BorderBrush="#334155"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="4"
+                    ClipToBounds="True">
+                <Viewbox Stretch="Uniform">
+                    <Canvas Width="800" Height="320"
+                            Background="#0B1220">
+
+                        <Line X1="40" Y1="160"
+                              X2="760" Y2="160"
+                              Stroke="#475569"
+                              StrokeThickness="1"/>
+
+                        <Line X1="40" Y1="20"
+                              X2="40" Y2="300"
+                              Stroke="#475569"
+                              StrokeThickness="1"/>
+
+                        <Polyline Points="{Binding ReferencePoints}"
+                                  Stroke="#60A5FA"
+                                  StrokeThickness="2.5"
+                                  Visibility="{Binding ShowReference, Converter={StaticResource BoolToVisibility}}"/>
+
+                        <Polyline Points="{Binding LinearPoints}"
+                                  Stroke="#F87171"
+                                  StrokeThickness="2"
+                                  Visibility="{Binding ShowLinear, Converter={StaticResource BoolToVisibility}}"/>
+
+                        <Polyline Points="{Binding HermitePoints}"
+                                  Stroke="#4ADE80"
+                                  StrokeThickness="2.5"
+                                  Visibility="{Binding ShowHermite, Converter={StaticResource BoolToVisibility}}"/>
+
+                        <Polyline Points="{Binding SupportPoints}"
+                                  Stroke="White"
+                                  StrokeThickness="5"
+                                  Visibility="{Binding ShowPoints, Converter={StaticResource BoolToVisibility}}"/>
+
+                        <Polyline Points="{Binding ErrorPoints}"
+                                  Stroke="#FB923C"
+                                  StrokeThickness="2"
+                                  Visibility="{Binding ShowError, Converter={StaticResource BoolToVisibility}}"/>
+                    </Canvas>
+                </Viewbox>
+            </Border>
+        </Grid>
+        <Border Grid.Row="3"
+                Background="{StaticResource PanelBrush}"
+                CornerRadius="8"
+                Padding="10"
+                Margin="0,10,0,0">
+            <TextBlock Text="{Binding Message}"
+                       TextWrapping="Wrap"
+                       Foreground="#CBD5E1"/>
+        </Border>
+    </Grid>
+</Window>
